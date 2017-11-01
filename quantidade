@@ -1,0 +1,53 @@
+<tr>
+<td class="dados-gerenciar" align="center">
+<?php 
+echo $imgAcessorio .'<br/>' .$tipoFoto ;
+$quantidade = $lnA['quantidade'];
+?>
+</td>
+            <td class="dados-gerenciar">
+<?php 
+echo  $lnA['titulo'].'<br/><br/>';
+                echo 'Quantidade: ' . $lnA['quantidade'] . ' Preço unitário: R$ ' . number_format($lnA['preco'], 2, ',', '.') . ' Sub Total: R$ ' . number_format($subtotalAA, 2, ',', '.');
+echo '<br/><br/>' . 'Alterar Quantidade:'; 
+?> 
+                <form method="POST">
+                    <input name="quantidade" type="text" class="cad-input" value= <?php echo $quantidade;?> placeholder="Quantidade" style="width: 30px;">               
+                    <?php
+                    echo '<a href="?log=' . $idUsuario . '&col=' . $idColecionador . '&a=' . $lnA['id'] . '&acao=altA" 
+                    onclick="return confirm(\'Deseja alterar a quantidade do carrinho?\');">Alterar</a>';
+                    ?>
+                </form>
+                <?php 
+                echo '<br/><br/>' . 'Quantidade: ' . $lnA['quantidade'] . ' Peso unitário:  ' . number_format($lnA['peso'], 1, ',', '.') . ' g  Sub Total:' . number_format(($lnA['quantidade'] * $lnA['peso'] ), 1, ',', '.').' g';
+?>
+                <br/><br/>
+                <?php
+echo '<a href="?log=' . $idUsuario . '&col=' . $idColecionador . '&a=' . $lnA['id'] . '&acao=delA" onclick="return confirm(\'Deseja remover esse acessório do carrinho?\');">Remover</a>';
+                ?>
+</td>
+<td class="dados-gerenciar" align="center">
+<strong style="color: #090;">R$ <?php echo number_format($subtotalAA, 2, ',', '.');?> </strong> 
+<input type="hidden" name="anuncioA[]" value="' . $lnA['id'] . '"/> 
+</td> 
+</tr>
+
+
+// ALTERA QUANTIDADE NO CARRINHO
+if ($_GET['acao'] == 'altA') {
+            $idA         = intval($_GET['a']);
+//$quantidade  = $_POST['quantidade'];
+$quantidade  = 25;
+
+            $altProduto = mysql_query("UPDATE carrinho SET quantidade = $quantidade 
+  WHERE idAnuncio    = '$idA' 
+  AND idColecionador = '$idColecionador' 
+  AND idCarUsuario   = '$idCarUsuario' 
+  AND tipo           = 'A'");
+            if ($altProduto >= 1) {
+                echo '<script type="text/javascript">alert("Quantidade alterada!")</script>';
+            } else {
+                echo '<script type="text/javascript">alert("Houve um erro ao tentar alterar a quantidade do carrinho!")</script>';
+            }
+            echo '<meta http-equiv="refresh" content="0; url=?log=' . $idUsuario . '&col=' . $idColecionador . '">';
+        }
